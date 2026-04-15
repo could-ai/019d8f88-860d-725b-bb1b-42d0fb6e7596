@@ -1,123 +1,255 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const FriendsVsFamilyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FriendsVsFamilyApp extends StatelessWidget {
+  const FriendsVsFamilyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
+      title: 'Friends vs Family',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const MyHomePage(title: 'Flutter Demo Home Page'),
-      },
+      home: const ExplorationScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class ExplorationScreen extends StatefulWidget {
+  const ExplorationScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ExplorationScreen> createState() => _ExplorationScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _ExplorationScreenState extends State<ExplorationScreen> {
+  String? _userVote;
+  
+  // Mock statistics
+  int _friendsVotes = 42;
+  int _familyVotes = 38;
+  int _bothVotes = 20;
 
-  void _incrementCounter() {
+  void _castVote(String choice) {
+    if (_userVote != null) return; // Already voted
+
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _userVote = choice;
+      if (choice == 'Friends') _friendsVotes++;
+      if (choice == 'Family') _familyVotes++;
+      if (choice == 'Both') _bothVotes++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
+        title: const Text('Are Friends Better Than Family?'),
+        centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text('$_counter', style: Theme.of(context).textTheme.headlineMedium),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'A Tale of Two Bonds',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'The debate between the importance of friends versus family is as old as human society. '
+              'Family represents our roots, our blood, and our unconditional beginnings. '
+              'Friends represent our choices, our shared interests, and the family we build along the way. '
+              'Explore the perspectives below and cast your vote.',
+              style: TextStyle(fontSize: 16, height: 1.5),
+              textAlign: TextAlign.justify,
+            ),
+            const SizedBox(height: 32),
+            
+            // The Case for Family
+            _buildPerspectiveCard(
+              context,
+              title: 'The Case for Family',
+              icon: Icons.family_restroom,
+              color: Colors.blue.shade100,
+              points: [
+                'Unconditional Support: Family is often there for you no matter what mistakes you make.',
+                'Shared History: You share a deep, foundational history and cultural background.',
+                'Lifelong Bond: Family ties are permanent and often outlast many friendships.',
+                'Duty and Care: There is a built-in societal and biological safety net.'
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // The Case for Friends
+            _buildPerspectiveCard(
+              context,
+              title: 'The Case for Friends',
+              icon: Icons.people,
+              color: Colors.green.shade100,
+              points: [
+                'The Family We Choose: You select friends based on mutual respect, interests, and values.',
+                'Less Judgment: Friendships often lack the complex baggage and expectations of family dynamics.',
+                'Evolving Support: Friends adapt to who you are now, not just who you were growing up.',
+                'Equality: Friendships are typically built on equal footing without hierarchical family structures.'
+              ],
+            ),
+
+            const SizedBox(height: 32),
+            const Divider(),
+            const SizedBox(height: 16),
+
+            // Voting Section
+            const Text(
+              'What do you think?',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            
+            if (_userVote == null) ...[
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 16,
+                runSpacing: 16,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => _castVote('Family'),
+                    icon: const Icon(Icons.family_restroom),
+                    label: const Text('Family First'),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () => _castVote('Friends'),
+                    icon: const Icon(Icons.people),
+                    label: const Text('Friends First'),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () => _castVote('Both'),
+                    icon: const Icon(Icons.balance),
+                    label: const Text('Equally Important'),
+                  ),
+                ],
+              ),
+            ] else ...[
+              Card(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Thanks for voting! You chose: $_userVote',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildStatBar('Family', _familyVotes, Colors.blue),
+                      const SizedBox(height: 8),
+                      _buildStatBar('Friends', _friendsVotes, Colors.green),
+                      const SizedBox(height: 8),
+                      _buildStatBar('Both', _bothVotes, Colors.purple),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 32),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget _buildPerspectiveCard(BuildContext context, {
+    required String title,
+    required IconData icon,
+    required Color color,
+    required List<String> points,
+  }) {
+    return Card(
+      elevation: 2,
+      color: color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 32),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ...points.map((point) => Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('• ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Expanded(child: Text(point, style: const TextStyle(fontSize: 15))),
+                ],
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatBar(String label, int votes, Color color) {
+    final total = _friendsVotes + _familyVotes + _bothVotes;
+    final percentage = total == 0 ? 0.0 : votes / total;
+    
+    return Row(
+      children: [
+        SizedBox(width: 80, child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
+        Expanded(
+          child: Stack(
+            children: [
+              Container(
+                height: 20,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: percentage,
+                child: Container(
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        SizedBox(
+          width: 40,
+          child: Text('${(percentage * 100).toStringAsFixed(1)}%'),
+        ),
+      ],
     );
   }
 }
